@@ -7,7 +7,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import { Switch } from "@/components/ui/switch";
 import { NodeType, PointCoordinates } from "@/types/pathfinding";
-import { Play, Square, Trash2, Upload, X } from "lucide-react";
+import { Eye, EyeOff, Play, Square, Trash2, Upload, X } from "lucide-react";
 import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 
@@ -24,6 +24,8 @@ interface ControlsProps {
   onRemoveImage: () => void;
   showGrid: boolean;
   onToggleGrid: (show: boolean) => void;
+  hideExplored: boolean;
+  onToggleHideExplored: (hide: boolean) => void;
   startNodes: PointCoordinates[];
   goalNodes: PointCoordinates[];
   activeStartNode: string | null;
@@ -45,6 +47,8 @@ export const Controls: React.FC<ControlsProps> = ({
   onRemoveImage,
   showGrid,
   onToggleGrid,
+  hideExplored,
+  onToggleHideExplored,
   startNodes,
   goalNodes,
   activeStartNode,
@@ -53,9 +57,9 @@ export const Controls: React.FC<ControlsProps> = ({
   onGoalNodeSelect,
 }) => {
   const tools: { type: NodeType; label: string; color: string }[] = [
-    { type: "start", label: "Start", color: "bg-blue-500" },
-    { type: "goal", label: "Goal", color: "bg-red-500" },
-    { type: "wall", label: "Wall", color: "bg-gray-800" },
+    { type: "start", label: "Start", color: "bg-blue-500/70" },
+    { type: "goal", label: "Goal", color: "bg-red-500/70" },
+    { type: "wall", label: "Wall", color: "bg-gray-800/70" },
   ];
 
   return (
@@ -188,8 +192,8 @@ export const Controls: React.FC<ControlsProps> = ({
 
         {/* Background Image Controls */}
         <div className="space-y-4">
-          <Label className="text-white font-medium">Background Image</Label>
-          <div className="flex gap-2">
+          <Label className="text-white font-medium">Display Options</Label>
+          <div className="flex flex-col gap-3">
             <div className="relative flex-1">
               <Input
                 type="file"
@@ -211,14 +215,32 @@ export const Controls: React.FC<ControlsProps> = ({
               </Button>
             )}
           </div>
-          <div className="flex items-center space-x-2">
-            <Switch
-              id="show-grid"
-              checked={showGrid}
-              onCheckedChange={onToggleGrid}
-              disabled={isSearching}
-            />
-            <Label htmlFor="show-grid" className="text-gray-300">Show Grid Lines</Label>
+
+          <div className="grid grid-cols-1 gap-3 mt-3">
+            <div className="flex items-center space-x-2">
+              <Switch
+                id="show-grid"
+                checked={showGrid}
+                onCheckedChange={onToggleGrid}
+                disabled={isSearching}
+              />
+              <Label htmlFor="show-grid" className="text-gray-300">Show Grid Lines</Label>
+            </div>
+            
+            <div className="flex items-center space-x-2">
+              <Switch
+                id="hide-explored"
+                checked={hideExplored}
+                onCheckedChange={onToggleHideExplored}
+                disabled={isSearching}
+              />
+              <Label htmlFor="hide-explored" className="text-gray-300">Hide Explored Nodes</Label>
+              {hideExplored ? (
+                <EyeOff className="h-4 w-4 text-gray-400" />
+              ) : (
+                <Eye className="h-4 w-4 text-gray-400" />
+              )}
+            </div>
           </div>
         </div>
 

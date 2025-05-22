@@ -8,31 +8,32 @@ interface NodeProps {
   onClick: () => void;
   onEnter: () => void;
   showGrid: boolean;
+  hideExplored: boolean;
 }
 
-export const Node: React.FC<NodeProps> = ({ node, onClick, onEnter, showGrid }) => {
+export const Node: React.FC<NodeProps> = ({ node, onClick, onEnter, showGrid, hideExplored }) => {
   const getNodeClasses = () => {
     const baseClasses = "w-full h-full cursor-pointer transition-all duration-100 relative";
     const borderClasses = showGrid ? "border border-gray-400/30" : "";
     
     if (node.type === "start") {
-      return cn(baseClasses, borderClasses, "bg-blue-500 hover:bg-blue-600");
+      return cn(baseClasses, borderClasses, "bg-blue-500/70 hover:bg-blue-600/70");
     }
     
     if (node.type === "goal") {
-      return cn(baseClasses, borderClasses, "bg-red-500 hover:bg-red-600");
+      return cn(baseClasses, borderClasses, "bg-red-500/70 hover:bg-red-600/70");
     }
     
     if (node.type === "wall") {
-      return cn(baseClasses, borderClasses, "bg-gray-800 hover:bg-gray-700");
+      return cn(baseClasses, borderClasses, "bg-gray-800/70 hover:bg-gray-700/70");
     }
     
     if (node.isPath) {
-      return cn(baseClasses, borderClasses, "bg-green-400 hover:bg-green-500");
+      return cn(baseClasses, borderClasses, "bg-green-400/70 hover:bg-green-500/70");
     }
     
-    if (node.isExplored) {
-      return cn(baseClasses, borderClasses, "bg-yellow-300 hover:bg-yellow-400");
+    if (node.isExplored && !hideExplored) {
+      return cn(baseClasses, borderClasses, "bg-yellow-300/60 hover:bg-yellow-400/60");
     }
     
     return cn(baseClasses, borderClasses, "bg-transparent hover:bg-white/10");

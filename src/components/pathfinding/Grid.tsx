@@ -11,6 +11,7 @@ interface GridProps {
   onMouseUp: () => void;
   backgroundImage?: string | null;
   showGrid: boolean;
+  hideExplored: boolean;
 }
 
 export const Grid: React.FC<GridProps> = ({ 
@@ -20,7 +21,8 @@ export const Grid: React.FC<GridProps> = ({
   onMouseDown,
   onMouseUp,
   backgroundImage, 
-  showGrid 
+  showGrid,
+  hideExplored
 }) => {
   if (grid.length === 0) return null;
 
@@ -58,6 +60,7 @@ export const Grid: React.FC<GridProps> = ({
                 onClick={() => onCellClick(rowIndex, colIndex)}
                 onEnter={() => onCellEnter(rowIndex, colIndex)}
                 showGrid={showGrid}
+                hideExplored={hideExplored}
               />
             ))
           )}

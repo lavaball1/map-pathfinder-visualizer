@@ -1,3 +1,4 @@
+
 import React, { useState, useCallback, useRef } from "react";
 import { Grid } from "./pathfinding/Grid";
 import { Controls } from "./pathfinding/Controls";
@@ -18,6 +19,7 @@ const PathfindingVisualizer = () => {
   const [isSearching, setIsSearching] = useState(false);
   const [backgroundImage, setBackgroundImage] = useState<string | null>(null);
   const [showGrid, setShowGrid] = useState(true);
+  const [hideExplored, setHideExplored] = useState(false);
   const [isDragging, setIsDragging] = useState(false);
   const lastVisitedNode = useRef<{ row: number, col: number } | null>(null);
   
@@ -274,6 +276,8 @@ const PathfindingVisualizer = () => {
         onRemoveImage={() => setBackgroundImage(null)}
         showGrid={showGrid}
         onToggleGrid={setShowGrid}
+        hideExplored={hideExplored}
+        onToggleHideExplored={setHideExplored}
         startNodes={startNodes}
         goalNodes={goalNodes}
         activeStartNode={activeStartNode}
@@ -291,6 +295,7 @@ const PathfindingVisualizer = () => {
           onMouseUp={handleMouseUp}
           backgroundImage={backgroundImage}
           showGrid={showGrid}
+          hideExplored={hideExplored}
         />
       </div>
 
