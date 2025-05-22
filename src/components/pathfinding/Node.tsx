@@ -24,7 +24,8 @@ export const Node: React.FC<NodeProps> = ({ node, onClick, onEnter, showGrid, hi
       return cn(baseClasses, borderClasses, "bg-red-500/70 hover:bg-red-600/70");
     }
     
-    if (node.type === "wall") {
+    // Hide walls when hideExplored is true
+    if (node.type === "wall" && !hideExplored) {
       return cn(baseClasses, borderClasses, "bg-gray-800/70 hover:bg-gray-700/70");
     }
     

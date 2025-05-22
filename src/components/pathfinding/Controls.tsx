@@ -234,7 +234,7 @@ export const Controls: React.FC<ControlsProps> = ({
                 onCheckedChange={onToggleHideExplored}
                 disabled={isSearching}
               />
-              <Label htmlFor="hide-explored" className="text-gray-300">Hide Explored Nodes</Label>
+              <Label htmlFor="hide-explored" className="text-gray-300">Hide Explored Nodes & Walls</Label>
               {hideExplored ? (
                 <EyeOff className="h-4 w-4 text-gray-400" />
               ) : (
