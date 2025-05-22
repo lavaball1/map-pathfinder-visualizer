@@ -6,11 +6,22 @@ import { Node } from "./Node";
 interface GridProps {
   grid: GridNode[][];
   onCellClick: (row: number, col: number) => void;
+  onCellEnter: (row: number, col: number) => void;
+  onMouseDown: () => void;
+  onMouseUp: () => void;
   backgroundImage?: string | null;
   showGrid: boolean;
 }
 
-export const Grid: React.FC<GridProps> = ({ grid, onCellClick, backgroundImage, showGrid }) => {
+export const Grid: React.FC<GridProps> = ({ 
+  grid, 
+  onCellClick, 
+  onCellEnter,
+  onMouseDown,
+  onMouseUp,
+  backgroundImage, 
+  showGrid 
+}) => {
   if (grid.length === 0) return null;
 
   const rows = grid.length;
@@ -26,6 +37,9 @@ export const Grid: React.FC<GridProps> = ({ grid, onCellClick, backgroundImage, 
           backgroundPosition: 'center',
           backgroundRepeat: 'no-repeat',
         }}
+        onMouseDown={onMouseDown}
+        onMouseUp={onMouseUp}
+        onMouseLeave={onMouseUp}
       >
         <div 
           className="grid gap-0"
@@ -42,6 +56,7 @@ export const Grid: React.FC<GridProps> = ({ grid, onCellClick, backgroundImage, 
                 key={`${rowIndex}-${colIndex}`}
                 node={node}
                 onClick={() => onCellClick(rowIndex, colIndex)}
+                onEnter={() => onCellEnter(rowIndex, colIndex)}
                 showGrid={showGrid}
               />
             ))

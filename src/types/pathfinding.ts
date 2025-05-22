@@ -11,10 +11,17 @@ export interface GridNode {
   hCost: number; // Heuristic distance to goal
   fCost: number; // gCost + hCost
   parent: GridNode | null;
+  id?: string; // Unique identifier for multiple starts/goals
 }
 
 export interface PathfindingResult {
   path: GridNode[];
   exploredNodes: GridNode[];
   success: boolean;
+}
+
+export interface PointCoordinates {
+  row: number;
+  col: number;
+  id: string;
 }

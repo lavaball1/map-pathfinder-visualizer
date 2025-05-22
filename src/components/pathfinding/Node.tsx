@@ -6,12 +6,13 @@ import { cn } from "@/lib/utils";
 interface NodeProps {
   node: GridNode;
   onClick: () => void;
+  onEnter: () => void;
   showGrid: boolean;
 }
 
-export const Node: React.FC<NodeProps> = ({ node, onClick, showGrid }) => {
+export const Node: React.FC<NodeProps> = ({ node, onClick, onEnter, showGrid }) => {
   const getNodeClasses = () => {
-    const baseClasses = "w-full h-full cursor-pointer transition-all duration-200 hover:scale-105";
+    const baseClasses = "w-full h-full cursor-pointer transition-all duration-100";
     const borderClasses = showGrid ? "border border-gray-400/30" : "";
     
     if (node.type === "start") {
@@ -41,6 +42,7 @@ export const Node: React.FC<NodeProps> = ({ node, onClick, showGrid }) => {
     <div
       className={getNodeClasses()}
       onClick={onClick}
+      onMouseEnter={onEnter}
       title={`(${node.row}, ${node.col}) - ${node.type}`}
     />
   );

@@ -1,5 +1,5 @@
 
-import { GridNode, PathfindingResult } from "@/types/pathfinding";
+import { GridNode, PathfindingResult, PointCoordinates } from "@/types/pathfinding";
 
 // Manhattan distance heuristic
 const calculateHeuristic = (nodeA: GridNode, nodeB: GridNode): number => {
@@ -49,8 +49,8 @@ const reconstructPath = (goalNode: GridNode): GridNode[] => {
 
 export const findPath = async (
   grid: GridNode[][],
-  start: { row: number; col: number },
-  goal: { row: number; col: number },
+  start: PointCoordinates,
+  goal: PointCoordinates,
   onProgress?: (exploredNodes: GridNode[], path?: GridNode[]) => void
 ): Promise<PathfindingResult> => {
   const startNode = grid[start.row][start.col];

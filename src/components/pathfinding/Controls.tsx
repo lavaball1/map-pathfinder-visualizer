@@ -6,8 +6,10 @@ import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import { Switch } from "@/components/ui/switch";
-import { NodeType } from "@/types/pathfinding";
+import { NodeType, PointCoordinates } from "@/types/pathfinding";
 import { Play, Square, Trash2, Upload, X } from "lucide-react";
+import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 
 interface ControlsProps {
   gridSize: { rows: number; cols: number };
@@ -22,6 +24,12 @@ interface ControlsProps {
   onRemoveImage: () => void;
   showGrid: boolean;
   onToggleGrid: (show: boolean) => void;
+  startNodes: PointCoordinates[];
+  goalNodes: PointCoordinates[];
+  activeStartNode: string | null;
+  activeGoalNode: string | null;
+  onStartNodeSelect: (id: string) => void;
+  onGoalNodeSelect: (id: string) => void;
 }
 
 export const Controls: React.FC<ControlsProps> = ({
@@ -37,6 +45,12 @@ export const Controls: React.FC<ControlsProps> = ({
   onRemoveImage,
   showGrid,
   onToggleGrid,
+  startNodes,
+  goalNodes,
+  activeStartNode,
+  activeGoalNode,
+  onStartNodeSelect,
+  onGoalNodeSelect,
 }) => {
   const tools: { type: NodeType; label: string; color: string }[] = [
     { type: "start", label: "Start", color: "bg-blue-500" },
@@ -106,7 +120,69 @@ export const Controls: React.FC<ControlsProps> = ({
               </Button>
             ))}
           </div>
+          <p className="text-xs text-gray-400">
+            Click to place points. Click and drag to create walls quickly.
+          </p>
         </div>
+
+        {/* Start & Goal Point Selection */}
+        {(startNodes.length > 0 || goalNodes.length > 0) && (
+          <>
+            <Separator className="bg-white/20" />
+            
+            <div className="space-y-4">
+              <Label className="text-white font-medium">Path Selection</Label>
+              
+              {startNodes.length > 0 && (
+                <div className="space-y-2">
+                  <Label className="text-gray-300">Start Point</Label>
+                  <Select 
+                    value={activeStartNode || undefined} 
+                    onValueChange={onStartNodeSelect}
+                    disabled={isSearching || startNodes.length === 0}
+                  >
+                    <SelectTrigger className="bg-white/10 border-white/20 text-white">
+                      <SelectValue placeholder="Select start point" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectGroup>
+                        {startNodes.map((node) => (
+                          <SelectItem key={node.id} value={node.id}>
+                            Start at ({node.row}, {node.col})
+                          </SelectItem>
+                        ))}
+                      </SelectGroup>
+                    </SelectContent>
+                  </Select>
+                </div>
+              )}
+              
+              {goalNodes.length > 0 && (
+                <div className="space-y-2">
+                  <Label className="text-gray-300">Goal Point</Label>
+                  <Select 
+                    value={activeGoalNode || undefined} 
+                    onValueChange={onGoalNodeSelect}
+                    disabled={isSearching || goalNodes.length === 0}
+                  >
+                    <SelectTrigger className="bg-white/10 border-white/20 text-white">
+                      <SelectValue placeholder="Select goal point" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectGroup>
+                        {goalNodes.map((node) => (
+                          <SelectItem key={node.id} value={node.id}>
+                            Goal at ({node.row}, {node.col})
+                          </SelectItem>
+                        ))}
+                      </SelectGroup>
+                    </SelectContent>
+                  </Select>
+                </div>
+              )}
+            </div>
+          </>
+        )}
 
         <Separator className="bg-white/20" />
 
@@ -152,7 +228,7 @@ export const Controls: React.FC<ControlsProps> = ({
         <div className="grid grid-cols-2 gap-4">
           <Button
             onClick={onSearch}
-            disabled={isSearching}
+            disabled={isSearching || !activeStartNode || !activeGoalNode}
             className="bg-green-600 hover:bg-green-700 text-white"
           >
             <Play className="h-4 w-4 mr-2" />
