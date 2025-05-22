@@ -1,7 +1,7 @@
-
 import React, { useState, useCallback, useRef } from "react";
 import { Grid } from "./pathfinding/Grid";
 import { Controls } from "./pathfinding/Controls";
+import { NameNodeDialog } from "./pathfinding/NameNodeDialog";
 import { findPath } from "@/utils/aStar";
 import { GridNode, NodeType, PointCoordinates } from "@/types/pathfinding";
 import { toast } from "sonner";
@@ -20,6 +20,16 @@ const PathfindingVisualizer = () => {
   const [showGrid, setShowGrid] = useState(true);
   const [isDragging, setIsDragging] = useState(false);
   const lastVisitedNode = useRef<{ row: number, col: number } | null>(null);
+  
+  // State for node naming
+  const [namingDialogOpen, setNamingDialogOpen] = useState(false);
+  const [nodeToName, setNodeToName] = useState<{
+    type: "start" | "goal";
+    id: string;
+    row: number;
+    col: number;
+    currentName?: string;
+  } | null>(null);
 
   const initializeGrid = useCallback(() => {
     const newGrid: GridNode[][] = [];
@@ -64,6 +74,22 @@ const PathfindingVisualizer = () => {
   const handleCellClick = (row: number, col: number) => {
     if (isSearching) return;
     lastVisitedNode.current = { row, col };
+    
+    // Check if clicking on an existing start or goal node to rename it
+    const clickedNode = grid[row][col];
+    if (clickedNode.type === "start" || clickedNode.type === "goal") {
+      setNodeToName({
+        type: clickedNode.type as "start" | "goal",
+        id: clickedNode.id!,
+        row,
+        col,
+        currentName: clickedNode.name
+      });
+      setNamingDialogOpen(true);
+      return;
+    }
+    
+    // Otherwise, handle normal cell updates
     updateCell(row, col);
   };
   
@@ -91,6 +117,11 @@ const PathfindingVisualizer = () => {
         if (!activeStartNode) {
           setActiveStartNode(id);
         }
+        // Open dialog to name the new start node
+        setTimeout(() => {
+          setNodeToName({ type: "start", id, row, col });
+          setNamingDialogOpen(true);
+        }, 100);
       } else if (currentTool === "goal") {
         const id = uuidv4();
         newGrid[row][col].type = "goal";
@@ -99,6 +130,11 @@ const PathfindingVisualizer = () => {
         if (!activeGoalNode) {
           setActiveGoalNode(id);
         }
+        // Open dialog to name the new goal node
+        setTimeout(() => {
+          setNodeToName({ type: "goal", id, row, col });
+          setNamingDialogOpen(true);
+        }, 100);
       } else if (currentTool === "wall") {
         // Toggle wall state if clicking, always add wall if dragging
         if (isDragging || newGrid[row][col].type === "empty") {
@@ -110,6 +146,32 @@ const PathfindingVisualizer = () => {
       
       return newGrid;
     });
+  };
+
+  const handleNodeNaming = (name: string) => {
+    if (!nodeToName) return;
+    
+    // Update the grid with the new name
+    setGrid(prevGrid => {
+      const newGrid = [...prevGrid];
+      const node = newGrid[nodeToName.row][nodeToName.col];
+      node.name = name;
+      return newGrid;
+    });
+    
+    // Update the point collections with the new name
+    if (nodeToName.type === "start") {
+      setStartNodes(prev => prev.map(node => 
+        node.id === nodeToName.id ? { ...node, name } : node
+      ));
+    } else {
+      setGoalNodes(prev => prev.map(node => 
+        node.id === nodeToName.id ? { ...node, name } : node
+      ));
+    }
+    
+    // Show a toast to confirm
+    toast.success(`${nodeToName.type === "start" ? "Start" : "Goal"} point named: ${name}`);
   };
 
   const handleMouseDown = () => {
@@ -231,6 +293,15 @@ const PathfindingVisualizer = () => {
           showGrid={showGrid}
         />
       </div>
+
+      {/* Dialog for naming nodes */}
+      <NameNodeDialog 
+        isOpen={namingDialogOpen}
+        onClose={() => setNamingDialogOpen(false)}
+        onSave={handleNodeNaming}
+        nodeType={nodeToName?.type || "start"}
+        defaultName={nodeToName?.currentName || ""}
+      />
     </div>
   );
 };

@@ -148,7 +148,7 @@ export const Controls: React.FC<ControlsProps> = ({
                       <SelectGroup>
                         {startNodes.map((node) => (
                           <SelectItem key={node.id} value={node.id}>
-                            Start at ({node.row}, {node.col})
+                            {node.name || `Start at (${node.row}, ${node.col})`}
                           </SelectItem>
                         ))}
                       </SelectGroup>
@@ -172,7 +172,7 @@ export const Controls: React.FC<ControlsProps> = ({
                       <SelectGroup>
                         {goalNodes.map((node) => (
                           <SelectItem key={node.id} value={node.id}>
-                            Goal at ({node.row}, {node.col})
+                            {node.name || `Goal at (${node.row}, ${node.col})`}
                           </SelectItem>
                         ))}
                       </SelectGroup>

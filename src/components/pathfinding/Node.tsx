@@ -12,7 +12,7 @@ interface NodeProps {
 
 export const Node: React.FC<NodeProps> = ({ node, onClick, onEnter, showGrid }) => {
   const getNodeClasses = () => {
-    const baseClasses = "w-full h-full cursor-pointer transition-all duration-100";
+    const baseClasses = "w-full h-full cursor-pointer transition-all duration-100 relative";
     const borderClasses = showGrid ? "border border-gray-400/30" : "";
     
     if (node.type === "start") {
@@ -38,12 +38,21 @@ export const Node: React.FC<NodeProps> = ({ node, onClick, onEnter, showGrid }) 
     return cn(baseClasses, borderClasses, "bg-transparent hover:bg-white/10");
   };
 
+  // Show node name if it exists and the node is start or goal
+  const showName = node.name && (node.type === "start" || node.type === "goal");
+
   return (
     <div
       className={getNodeClasses()}
       onClick={onClick}
       onMouseEnter={onEnter}
-      title={`(${node.row}, ${node.col}) - ${node.type}`}
-    />
+      title={`${node.name ? `${node.name} - ` : ''}(${node.row}, ${node.col}) - ${node.type}`}
+    >
+      {showName && (
+        <div className="absolute inset-0 flex items-center justify-center text-xs text-white font-bold overflow-hidden p-1">
+          <span className="truncate">{node.name}</span>
+        </div>
+      )}
+    </div>
   );
 };

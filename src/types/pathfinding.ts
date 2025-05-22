@@ -12,6 +12,7 @@ export interface GridNode {
   fCost: number; // gCost + hCost
   parent: GridNode | null;
   id?: string; // Unique identifier for multiple starts/goals
+  name?: string; // Custom name for the node
 }
 
 export interface PathfindingResult {
@@ -24,4 +25,5 @@ export interface PointCoordinates {
   row: number;
   col: number;
   id: string;
+  name?: string; // Custom name for the point
 }
